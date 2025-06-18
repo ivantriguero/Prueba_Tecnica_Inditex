@@ -4,12 +4,14 @@ import es.inditex.coreplatform.domain.model.Price;
 import es.inditex.coreplatform.domain.port.out.PriceRepository;
 import es.inditex.coreplatform.infrastructure.jpa.mapper.PriceEntityMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Component
 public class PriceRepositoryAdapter implements PriceRepository {
 
     private final JpaPriceRepository jpaPriceRepository;

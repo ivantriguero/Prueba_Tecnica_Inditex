@@ -13,15 +13,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class GetPriceServiceImplTest {
+class GetPriceImplTest {
 
     private PriceRepository priceRepository;
-    private GetPriceServiceImpl getPriceServiceImpl;
+    private GetPriceImpl getPriceImpl;
 
     @BeforeEach
     void setUp() {
         priceRepository = mock(PriceRepository.class);
-        getPriceServiceImpl = new GetPriceServiceImpl(priceRepository);
+        getPriceImpl = new GetPriceImpl(priceRepository);
     }
 
     @Test
@@ -57,7 +57,7 @@ class GetPriceServiceImplTest {
                 .thenReturn(List.of(lowPriority, highPriority));
 
         // When
-        Price result = getPriceServiceImpl.getApplicablePrice(date, productId, brandId);
+        Price result = getPriceImpl.getApplicablePrice(date, productId, brandId);
 
         // Then
         assertNotNull(result);
@@ -76,6 +76,6 @@ class GetPriceServiceImplTest {
 
         // When & Then
         assertThrows(PriceNotFoundException.class,
-                () -> getPriceServiceImpl.getApplicablePrice(date, productId, brandId));
+                () -> getPriceImpl.getApplicablePrice(date, productId, brandId));
     }
 }

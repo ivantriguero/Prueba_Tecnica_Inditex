@@ -3,11 +3,12 @@ package es.inditex.coreplatform.infrastructure.rest.controller;
 import es.inditex.coreplatform.application.usecase.GetPrice;
 import es.inditex.coreplatform.domain.exception.PriceNotFoundException;
 import es.inditex.coreplatform.domain.model.Price;
-import org.junit.jupiter.api.BeforeEach;
+import es.inditex.coreplatform.infrastructure.rest.config.ControllerMockConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -16,26 +17,23 @@ import java.time.LocalDateTime;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = PriceController.class)
 @AutoConfigureMockMvc
+@Import(ControllerMockConfig.class)
 class PriceControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
     private GetPrice getPrice;
 
     private final String BASE_URL = "/api/prices";
 
-    @BeforeEach
-    void setUp() {
-        getPrice = mock(GetPrice.class);
-    }
 
     @Test
     void returnApplicablePrice() throws Exception {
@@ -58,7 +56,7 @@ class PriceControllerTest {
                 .willReturn(price);
 
         mockMvc.perform(get(BASE_URL)
-                        .param("date", "2020-06-14T10:00:00")
+                        .param("date", "2020-06-14T10:00:00+02:00")
                         .param("productId", "35455")
                         .param("brandId", "1"))
                 .andExpect(status().isOk())
@@ -72,7 +70,7 @@ class PriceControllerTest {
                 .willThrow(new PriceNotFoundException(35455L, 1L, "2020-06-14"));
 
         mockMvc.perform(get(BASE_URL)
-                        .param("date", "2020-06-14T00:00:00")
+                        .param("date", "2020-06-14T10:00:00+02:00")
                         .param("productId", "35455")
                         .param("brandId", "1"))
                 .andExpect(status().isNotFound());
@@ -88,10 +86,31 @@ class PriceControllerTest {
     }
 
     @Test
+    void return400ForInvalidProductId() throws Exception {
+        mockMvc.perform(get(BASE_URL)
+                        .param("date", "2020-06-14T10:00:00+02:00")
+                        .param("productId", "invalid")
+                        .param("brandId", "1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("El parámetro 'productId' debe ser de tipo 'Long'"));
+    }
+
+    @Test
+    void return400ForInvalidBrandId() throws Exception {
+        mockMvc.perform(get(BASE_URL)
+                        .param("date", "2020-06-14T10:00:00+02:00")
+                        .param("productId", "35455")
+                        .param("brandId", "invalid"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("El parámetro 'brandId' debe ser de tipo 'Long'"));
+    }
+
+    @Test
     void return400ForMissingParams() throws Exception {
         mockMvc.perform(get(BASE_URL)
-                        .param("date", "2020-06-14T00:00:00")
+                        .param("date", "2020-06-14T10:00:00+02:00")
                 // Falta productId y brandId
         ).andExpect(status().isBadRequest());
     }
+
 }

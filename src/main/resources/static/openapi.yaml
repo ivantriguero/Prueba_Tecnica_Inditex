@@ -8,6 +8,8 @@ servers:
 paths:
   /api/prices:
     get:
+      tags:
+        - Price
       summary: Consultar precio aplicable
       description: Devuelve el precio que debe aplicarse a un producto en una fecha determinada, dado un productId y un brandId.
       operationId: getApplicablePrice
@@ -39,22 +41,22 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PriceResponse'
+                $ref: '#/components/schemas/PriceResponseDTO'
         '404':
           description: No se encontró ningún precio aplicable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
         '400':
           description: Parámetros inválidos
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponseDTO'
 components:
   schemas:
-    PriceResponse:
+    PriceResponseDTO:
       type: object
       properties:
         productId:
@@ -84,7 +86,7 @@ components:
         - endDate
         - price
         - currency
-    ErrorResponse:
+    ErrorResponseDTO:
       type: object
       properties:
         message:

@@ -4,13 +4,15 @@ import es.inditex.coreplatform.domain.exception.PriceNotFoundException;
 import es.inditex.coreplatform.domain.model.Price;
 import es.inditex.coreplatform.domain.port.out.PriceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 
 @RequiredArgsConstructor
-public class GetPriceServiceImpl implements GetPrice {
+@Component
+public class GetPriceImpl implements GetPrice {
 
     private final PriceRepository priceRepository;
 
