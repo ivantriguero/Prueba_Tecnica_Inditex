@@ -1,4 +1,4 @@
-package es.inditex.coreplatform.infrastructure.adapter.out.persistance;
+package es.inditex.coreplatform.infrastructure.jpa.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

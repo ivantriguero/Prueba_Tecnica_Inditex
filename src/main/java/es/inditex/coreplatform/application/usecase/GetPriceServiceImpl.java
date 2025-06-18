@@ -1,8 +1,7 @@
-package es.inditex.coreplatform.domain.service;
+package es.inditex.coreplatform.application.usecase;
 
 import es.inditex.coreplatform.domain.exception.PriceNotFoundException;
 import es.inditex.coreplatform.domain.model.Price;
-import es.inditex.coreplatform.domain.port.in.GetPriceUseCase;
 import es.inditex.coreplatform.domain.port.out.PriceRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -11,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 
 @RequiredArgsConstructor
-public class GetPriceService implements GetPriceUseCase {
+public class GetPriceServiceImpl implements GetPrice {
 
     private final PriceRepository priceRepository;
 

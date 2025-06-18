@@ -1,4 +1,4 @@
-package es.inditex.coreplatform.domain.service;
+package es.inditex.coreplatform.application.usecase;
 
 import es.inditex.coreplatform.domain.exception.PriceNotFoundException;
 import es.inditex.coreplatform.domain.model.Price;
@@ -13,15 +13,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class GetPriceServiceTest {
+class GetPriceServiceImplTest {
 
     private PriceRepository priceRepository;
-    private GetPriceService getPriceService;
+    private GetPriceServiceImpl getPriceServiceImpl;
 
     @BeforeEach
     void setUp() {
         priceRepository = mock(PriceRepository.class);
-        getPriceService = new GetPriceService(priceRepository);
+        getPriceServiceImpl = new GetPriceServiceImpl(priceRepository);
     }
 
     @Test
@@ -57,7 +57,7 @@ class GetPriceServiceTest {
                 .thenReturn(List.of(lowPriority, highPriority));
 
         // When
-        Price result = getPriceService.getApplicablePrice(date, productId, brandId);
+        Price result = getPriceServiceImpl.getApplicablePrice(date, productId, brandId);
 
         // Then
         assertNotNull(result);
@@ -76,6 +76,6 @@ class GetPriceServiceTest {
 
         // When & Then
         assertThrows(PriceNotFoundException.class,
-                () -> getPriceService.getApplicablePrice(date, productId, brandId));
+                () -> getPriceServiceImpl.getApplicablePrice(date, productId, brandId));
     }
 }
