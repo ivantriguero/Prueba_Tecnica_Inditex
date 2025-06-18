@@ -16,6 +16,10 @@ public class PriceRepositoryAdapter implements PriceRepository {
 
     @Override
     public List<Price> findPrices(Long productId, Long brandId, LocalDateTime date) {
-        return null;
+        return jpaPriceRepository
+                .findByProductIdAndBrandIdAndDate(productId, brandId, date)
+                .stream()
+                .map(PriceEntityMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }
