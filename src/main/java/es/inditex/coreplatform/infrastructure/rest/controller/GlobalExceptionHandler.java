@@ -5,7 +5,6 @@ import es.inditex.coreplatform.adapter.infrastructure.rest.openapi.dto.ErrorResp
 import es.inditex.coreplatform.domain.exception.PriceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
