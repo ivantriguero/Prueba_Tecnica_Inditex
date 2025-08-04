@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -25,24 +24,13 @@ class GetPriceImplTest {
     }
 
     @Test
-    void returnPriceWithHighestPriority() {
+    void returnPriceFromRepository() {
         // Given
         LocalDateTime date = LocalDateTime.of(2020, 6, 14, 16, 0);
         Long productId = 35455L;
         Long brandId = 1L;
 
-        Price lowPriority = Price.builder()
-                .productId(productId)
-                .brandId(brandId)
-                .startDate(LocalDateTime.of(2020, 6, 14, 0, 0))
-                .endDate(LocalDateTime.of(2020, 12, 31, 23, 59))
-                .priceList(1L)
-                .priority(0)
-                .price(new BigDecimal("35.50"))
-                .currency("EUR")
-                .build();
-
-        Price highPriority = Price.builder()
+        Price expectedPrice = Price.builder()
                 .productId(productId)
                 .brandId(brandId)
                 .startDate(LocalDateTime.of(2020, 6, 14, 15, 0))
@@ -53,26 +41,26 @@ class GetPriceImplTest {
                 .currency("EUR")
                 .build();
 
-        when(priceRepository.findPrices(productId, brandId, date))
-                .thenReturn(List.of(lowPriority, highPriority));
+        when(priceRepository.findPrice(productId, brandId, date)).thenReturn(expectedPrice);
 
         // When
         Price result = getPriceImpl.getApplicablePrice(date, productId, brandId);
 
         // Then
         assertNotNull(result);
-        assertEquals(highPriority.getPriceList(), result.getPriceList());
-        assertEquals(highPriority.getPriority(), result.getPriority());
+        assertEquals(expectedPrice.getPriceList(), result.getPriceList());
+        assertEquals(expectedPrice.getPriority(), result.getPriority());
     }
 
     @Test
-    void throwPriceNotFoundException() {
+    void throwPriceNotFoundExceptionWhenRepositoryFails() {
         // Given
         LocalDateTime date = LocalDateTime.of(2020, 6, 14, 10, 0);
         Long productId = 99999L;
         Long brandId = 2L;
 
-        when(priceRepository.findPrices(productId, brandId, date)).thenReturn(List.of());
+        when(priceRepository.findPrice(productId, brandId, date))
+                .thenThrow(new PriceNotFoundException(productId, brandId, date));
 
         // When & Then
         assertThrows(PriceNotFoundException.class,
