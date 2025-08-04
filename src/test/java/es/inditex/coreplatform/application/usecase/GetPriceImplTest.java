@@ -24,7 +24,7 @@ class GetPriceImplTest {
     }
 
     @Test
-    void returnPriceFromRepository() {
+    void shouldReturnPriceWhenRepositoryFindsMatch() {
         // Given
         LocalDateTime date = LocalDateTime.of(2020, 6, 14, 16, 0);
         Long productId = 35455L;
@@ -37,7 +37,7 @@ class GetPriceImplTest {
                 .endDate(LocalDateTime.of(2020, 6, 14, 18, 30))
                 .priceList(2L)
                 .priority(1)
-                .price(new BigDecimal("25.45"))
+                .priceValue(new BigDecimal("25.45"))
                 .currency("EUR")
                 .build();
 
@@ -48,12 +48,18 @@ class GetPriceImplTest {
 
         // Then
         assertNotNull(result);
+        assertEquals(expectedPrice.getProductId(), result.getProductId());
+        assertEquals(expectedPrice.getBrandId(), result.getBrandId());
+        assertEquals(expectedPrice.getStartDate(), result.getStartDate());
+        assertEquals(expectedPrice.getEndDate(), result.getEndDate());
         assertEquals(expectedPrice.getPriceList(), result.getPriceList());
         assertEquals(expectedPrice.getPriority(), result.getPriority());
+        assertEquals(expectedPrice.getPriceValue(), result.getPriceValue());
+        assertEquals(expectedPrice.getCurrency(), result.getCurrency());
     }
 
     @Test
-    void throwPriceNotFoundExceptionWhenRepositoryFails() {
+    void shouldThrowExceptionWhenNoApplicablePriceFound() {
         // Given
         LocalDateTime date = LocalDateTime.of(2020, 6, 14, 10, 0);
         Long productId = 99999L;

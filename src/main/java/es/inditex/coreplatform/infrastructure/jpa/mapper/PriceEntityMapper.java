@@ -5,6 +5,10 @@ import es.inditex.coreplatform.infrastructure.jpa.entity.PriceEntity;
 
 public class PriceEntityMapper {
 
+    private PriceEntityMapper() {
+        // Evita instanciación
+    }
+
     public static Price toDomain(PriceEntity entity) {
         return Price.builder()
                 .id(entity.getId())
@@ -14,7 +18,7 @@ public class PriceEntityMapper {
                 .priceList(entity.getPriceList())
                 .productId(entity.getProductId())
                 .priority(entity.getPriority())
-                .price(entity.getPrice())
+                .priceValue(entity.getPrice())
                 .currency(entity.getCurrency())
                 .build();
     }
@@ -28,7 +32,7 @@ public class PriceEntityMapper {
                 .priceList(domain.getPriceList())
                 .productId(domain.getProductId())
                 .priority(domain.getPriority())
-                .price(domain.getPrice())
+                .price(domain.getPriceValue())
                 .currency(domain.getCurrency())
                 .build();
     }

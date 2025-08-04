@@ -37,7 +37,7 @@ class PriceMapperTest {
         assertThat(result.getPriceList()).isEqualTo(entity.getPriceList());
         assertThat(result.getProductId()).isEqualTo(entity.getProductId());
         assertThat(result.getPriority()).isEqualTo(entity.getPriority());
-        assertThat(result.getPrice()).isEqualByComparingTo(entity.getPrice());
+        assertThat(result.getPriceValue()).isEqualByComparingTo(entity.getPrice());
         assertThat(result.getCurrency()).isEqualTo(entity.getCurrency());
     }
 
@@ -51,7 +51,7 @@ class PriceMapperTest {
                 .priceList(1L)
                 .productId(35455L)
                 .priority(0)
-                .price(new BigDecimal("35.50"))
+                .priceValue(new BigDecimal("35.50"))
                 .currency("EUR")
                 .build();
 
@@ -64,7 +64,7 @@ class PriceMapperTest {
         assertThat(result.getPriceList()).isEqualTo(price.getPriceList());
         assertThat(result.getProductId()).isEqualTo(price.getProductId());
         assertThat(result.getPriority()).isEqualTo(price.getPriority());
-        assertThat(result.getPrice()).isEqualByComparingTo(price.getPrice());
+        assertThat(result.getPrice()).isEqualByComparingTo(price.getPriceValue());
         assertThat(result.getCurrency()).isEqualTo(price.getCurrency());
     }
 }

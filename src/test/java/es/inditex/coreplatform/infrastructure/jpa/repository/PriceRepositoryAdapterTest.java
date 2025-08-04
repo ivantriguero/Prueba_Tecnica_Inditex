@@ -53,7 +53,7 @@ class PriceRepositoryAdapterTest {
         // Then
         assertEquals(productId, price.getProductId());
         assertEquals("EUR", price.getCurrency());
-        assertEquals(new BigDecimal("25.45"), price.getPrice());
+        assertEquals(new BigDecimal("25.45"), price.getPriceValue());
     }
 
     @Test
