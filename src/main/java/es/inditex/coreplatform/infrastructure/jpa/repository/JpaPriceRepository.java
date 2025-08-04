@@ -5,11 +5,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
 public interface JpaPriceRepository extends JpaRepository<PriceEntity, Long> {
-    @Query("SELECT p FROM PriceEntity p WHERE p.productId = :productId AND p.brandId = :brandId " +
-            "AND :applicationDate BETWEEN p.startDate AND p.endDate")
-    List<PriceEntity> findByProductIdAndBrandIdAndDate(Long productId, Long brandId, LocalDateTime applicationDate);
+    @Query(value = "SELECT * FROM prices p " +
+            "WHERE p.product_id = :productId " +
+            "AND p.brand_id = :brandId " +
+            "AND :applicationDate BETWEEN p.start_date AND p.end_date " +
+            "ORDER BY p.priority DESC LIMIT 1", nativeQuery = true)
+    Optional<PriceEntity> findTopByProductIdAndBrandIdAndDateOrderByPriorityDesc(
+            Long productId, Long brandId, LocalDateTime applicationDate);
+
 
 }
