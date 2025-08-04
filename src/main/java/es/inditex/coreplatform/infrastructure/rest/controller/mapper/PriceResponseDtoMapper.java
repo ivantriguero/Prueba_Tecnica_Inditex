@@ -5,9 +5,11 @@ import es.inditex.coreplatform.domain.model.Price;
 
 import java.time.ZoneOffset;
 
-import static org.apache.commons.lang3.time.CalendarUtils.toOffsetDateTime;
-
 public class PriceResponseDtoMapper {
+
+    private PriceResponseDtoMapper() {
+        // Evita instanciación
+    }
 
     public static PriceResponseDTO toPriceResponseDTO(Price price) {
         return new PriceResponseDTO(
@@ -16,7 +18,7 @@ public class PriceResponseDtoMapper {
                 price.getPriceList().intValue(),
                 price.getStartDate().atOffset(ZoneOffset.UTC),
                 price.getEndDate().atOffset(ZoneOffset.UTC),
-                price.getPrice().doubleValue(),
+                price.getPriceValue().doubleValue(),
                 price.getCurrency()
         );
     }

@@ -48,7 +48,7 @@ class PriceControllerTest {
                 .endDate(LocalDateTime.of(2020, 12, 31, 23, 59))
                 .priceList(1L)
                 .priority(0)
-                .price(new BigDecimal("35.50"))
+                .priceValue(new BigDecimal("35.50"))
                 .currency("EUR")
                 .build();
 
@@ -67,7 +67,7 @@ class PriceControllerTest {
     @Test
     void return404WhenNoPriceFound() throws Exception {
         given(getPrice.getApplicablePrice(any(), anyLong(), anyLong()))
-                .willThrow(new PriceNotFoundException(35455L, 1L, "2020-06-14"));
+                .willThrow(new PriceNotFoundException(35455L, 1L, LocalDateTime.of(2020, 6, 14, 10, 0)));
 
         mockMvc.perform(get(BASE_URL)
                         .param("date", "2020-06-14T10:00:00+02:00")
@@ -112,5 +112,7 @@ class PriceControllerTest {
                 // Falta productId y brandId
         ).andExpect(status().isBadRequest());
     }
+
+
 
 }
