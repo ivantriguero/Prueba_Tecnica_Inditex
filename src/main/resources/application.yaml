@@ -2,8 +2,8 @@ spring:
   datasource:
     url: jdbc:h2:mem:pricesdb
     driver-class-name: org.h2.Driver
-    username: user
-    password: pass
+    username: ${DB_USERNAME:user1}
+    password: ${DB_PASSWORD:}
 
   jpa:
     hibernate:

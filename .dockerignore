@@ -1,4 +1,11 @@
-target/
-.idea/
-*.iml
+# Ignora directorios sensibles
+.git
+.idea
+.vscode
+target
+.env
+.DS_Store
+
+# Ignora archivos de sistema
 *.log
+*.iml

@@ -48,7 +48,7 @@ class PriceControllerTest {
                 .endDate(LocalDateTime.of(2020, 12, 31, 23, 59))
                 .priceList(1L)
                 .priority(0)
-                .price(new BigDecimal("35.50"))
+                .priceValue(new BigDecimal("35.50"))
                 .currency("EUR")
                 .build();
 
@@ -112,5 +112,7 @@ class PriceControllerTest {
                 // Falta productId y brandId
         ).andExpect(status().isBadRequest());
     }
+
+
 
 }

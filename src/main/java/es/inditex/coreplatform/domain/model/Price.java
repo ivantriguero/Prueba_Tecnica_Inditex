@@ -26,7 +26,7 @@ public class Price {
 
     private Integer priority;
 
-    private BigDecimal price;
+    private BigDecimal priceValue;
 
     private String currency;
 }

@@ -30,11 +30,17 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponseDTO> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        assert ex.getRequiredType() != null;
+        if (ex.getRequiredType() == null) {
+            String fallbackMessage = "El parámetro '" + ex.getName() + "' tiene un tipo desconocido";
+            return ResponseEntity.badRequest().body(new ErrorResponseDTO(fallbackMessage));
+        }
+
         String message = String.format("El parámetro '%s' debe ser de tipo '%s'",
                 ex.getName(), ex.getRequiredType().getSimpleName());
+
         return ResponseEntity.badRequest().body(new ErrorResponseDTO(message));
     }
+
 
     /**
      * Lanza esta excepción cuando falta un parámetro obligatorio en la query string.

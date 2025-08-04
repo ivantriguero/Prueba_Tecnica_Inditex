@@ -1,46 +1,67 @@
-
 # CorePlatform - Price API
 
-Este proyecto implementa una **API REST** en **Spring Boot** para consultar el precio aplicable de un producto en una fecha concreta para una marca específica, basado en una tabla `PRICES` simulada en base de datos **H2** en memoria.
+Este proyecto implementa una **API REST** en **Spring Boot** para consultar el precio aplicable de un producto en una fecha concreta para una marca específica, basado en una tabla `PRICES` simulada en base de datos **H2** en memoria. Está preparado para facilitar su despliegue mediante contenedores Docker.
 
 ---
 
-## 📌 Descripción
+## 📌 Descripción funcional
 
-En la base de datos se dispone de la tabla `PRICES` que refleja el precio final (**PVP**) y la tarifa que aplica a un producto de una marca dentro de un rango de fechas determinado.
+La base de datos contiene una tabla `PRICES` que refleja el precio final (**PVP**) y la tarifa aplicable a un producto para una marca dentro de un rango de fechas.
 
 El servicio REST acepta como **parámetros de entrada**:
-- **`applicationDate`** → Fecha y hora de aplicación (en formato ISO LocalDateTime).
-- **`productId`** → Identificador de producto.
-- **`brandId`** → Identificador de cadena o marca.
+- `applicationDate`: Fecha y hora de aplicación (formato ISO LocalDateTime).
+- `productId`: Identificador de producto.
+- `brandId`: Identificador de marca o cadena.
 
 Y devuelve como **datos de salida**:
 - Identificador de producto.
 - Identificador de marca.
-- Identificador de tarifa aplicable (**priceList**).
-- Rango de fechas de aplicación (**startDate**, **endDate**).
-- Precio final a aplicar (**price**).
-- Moneda (**curr**).
+- Tarifa aplicada (`priceList`).
+- Rango de fechas de aplicación (`startDate`, `endDate`).
+- Precio final (`price`).
+- Moneda (`curr`).
 
-Si existen múltiples tarifas aplicables en la misma fecha y rango, se aplica la de **mayor prioridad** (`priority`).
-
----
-
-## 🧩 Arquitectura
-
-- **Hexagonal (Ports & Adapters)**: Separación clara entre dominio, aplicación y capa de infraestructura.
-- **Principios SOLID**: Respetados en todo el diseño para garantizar extensibilidad y mantenibilidad.
-- **TDD (Test Driven Development)**: Desarrollo guiado por tests unitarios y de integración.
-- **API First**: Contrato definido mediante **OpenAPI 3**, con **Swagger UI** disponible.
+Si hay múltiples tarifas aplicables, se selecciona la de **mayor prioridad** (`priority`).
 
 ---
 
+## 🧱 Arquitectura del proyecto
 
-## 🗄️ Base de datos
+El proyecto sigue los principios de **arquitectura hexagonal**:
 
-- Motor: **H2** en memoria.
-- Datos precargados desde `data.sql`.
-- Ejemplo de tabla `PRICES`:
+- **Dominio**: Reglas de negocio representadas por entidades, modelos y puertos.
+- **Aplicación**: Casos de uso que orquestan el dominio.
+- **Infraestructura**: Adaptadores como controladores REST, mapeadores JPA y acceso a base de datos.
+
+Además:
+- 🧼 **Principios SOLID** en todas las capas.
+- ✅ **Desarrollo dirigido por tests (TDD)**.
+- 🌐 API documentada vía **OpenAPI 3** y expuesta con **Swagger UI**.
+- 🥪 Tests **unitarios**, **de integración** y **end-to-end**.
+- 🐳 Preparado para **despliegue con Docker**.
+
+---
+
+## 🛠️ Tecnologías utilizadas
+
+- Java 21
+- Spring Boot 3.4+
+- Maven 3.9+
+- H2 Database (en memoria)
+- JUnit 5 + RestAssured
+- Swagger/OpenAPI
+- Docker
+- SonarQube (calidad de código)
+- Postman (colección de pruebas)
+
+---
+
+## 💄 Base de datos
+
+- Motor: **H2** (modo memoria).
+- Script de datos: `data.sql`.
+
+Ejemplo de tabla `PRICES`:
 
 | BRAND_ID | START_DATE          | END_DATE            | PRICE_LIST | PRODUCT_ID | PRIORITY | PRICE | CURR |
 |----------|---------------------|---------------------|------------|------------|----------|-------|------|
@@ -53,24 +74,24 @@ Si existen múltiples tarifas aplicables en la misma fecha y rango, se aplica la
 
 ## 🚀 Cómo ejecutar la aplicación
 
-### ✅ Requisitos previos
+### Requisitos previos
 
-- Java **21**
-- Maven **3.9+**
-- Docker (opcional, recomendado para entorno homogéneo)
+- Java 21
+- Maven 3.9+
+- Docker (opcional, pero recomendado)
 
-### ⚙️ Opción 1: Ejecutar localmente con Maven
+### Opción 1: Ejecutar localmente
 
 ```bash
 mvn clean spring-boot:run
 ```
 
-La aplicación se ejecutará en:
+Accede a:
 ```
 http://localhost:8080
 ```
 
-### 🐳 Opción 2: Ejecutar con Docker (recomendado)
+### Opción 2: Ejecutar con Docker
 
 ```bash
 docker build -t price-api .
@@ -79,25 +100,21 @@ docker run -p 8080:8080 price-api
 
 ---
 
-## 🔗 Endpoints
+## 🔗 Endpoints REST
 
-### 📌 Endpoint principal
-
-**GET** `/api/prices`
+### GET `/api/prices`
 
 **Parámetros de consulta:**
-- `applicationDate` → Fecha y hora de aplicación (formato ISO LocalDateTime)
+- `applicationDate` → Fecha y hora de aplicación
 - `productId` → ID de producto
 - `brandId` → ID de marca
 
-**Ejemplo de petición:**
-
+Ejemplo:
 ```
 GET http://localhost:8080/api/prices?applicationDate=2020-06-14T16:00:00&productId=35455&brandId=1
 ```
 
-**Ejemplo de respuesta exitosa:**
-
+Respuesta:
 ```json
 {
   "productId": 35455,
@@ -110,52 +127,75 @@ GET http://localhost:8080/api/prices?applicationDate=2020-06-14T16:00:00&product
 }
 ```
 
-Si no existe tarifa aplicable, se devuelve un **404 Not Found** con mensaje descriptivo.
+En caso de error, se devuelve un **404 Not Found** con mensaje.
 
 ---
 
-## 📑 OpenAPI & Swagger
+## 📁 Documentación OpenAPI
 
-- **Swagger UI** disponible en:  
+- Swagger UI disponible en:  
   [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
-- Archivo `openapi.yaml` en:  
+- Archivo OpenAPI:  
   `src/main/resources/static/openapi.yaml`
 
 ---
 
-## ⚠️ Gestión de errores
+## 🧪 Pruebas con Postman
 
-Las excepciones se gestionan globalmente mediante `GlobalExceptionHandler`, devolviendo respuestas normalizadas con estructura `ErrorResponseDTO` que incluye:
-- Código de error HTTP
-- Mensaje legible
-- Marca de tiempo
+En el repositorio se incluye el archivo **`Pruebas_Postman.json`**, que contiene una colección de peticiones para **Postman** con los casos de prueba planteados.  
+Para usarla:
+1. Abre Postman.
+2. Importa el archivo `Pruebas_Postman.json`.
+3. Ejecuta los requests para verificar el comportamiento de la API.
 
 ---
 
-## ✅ Tests E2E
+## ⚠️ Gestión de errores global
 
-Se incluyen tests E2E para validar todos los escenarios indicados:
+La clase `GlobalExceptionHandler` captura errores comunes y devuelve respuestas normalizadas (`ErrorResponseDTO`) con:
+- Código HTTP
+- Mensaje legible
+- Marca temporal (`timestamp`)
 
-| Test | Fecha de petición                | Resultado esperado |
-|------|----------------------------------|--------------------|
-| 1    | `2020-06-14T10:00:00`            | Tarifa 1           |
-| 2    | `2020-06-14T16:00:00`            | Tarifa 2           |
-| 3    | `2020-06-14T21:00:00`            | Tarifa 1           |
-| 4    | `2020-06-15T10:00:00`            | Tarifa 3           |
-| 5    | `2020-06-16T21:00:00`            | Tarifa 4           |
+---
 
-Los tests están implementados con **JUnit 5**, **Spring Boot Test**, y **RestAssured**.
+## ✅ Tests automáticos
+
+Incluye:
+- Tests **unitarios** para lógica de dominio y casos de uso.
+- Tests **E2E** con `RestAssured` para 5 escenarios:
+
+| Test | applicationDate             | Tarifa esperada |
+|------|-----------------------------|-----------------|
+| 1    | `2020-06-14T10:00:00`       | Tarifa 1        |
+| 2    | `2020-06-14T16:00:00`       | Tarifa 2        |
+| 3    | `2020-06-14T21:00:00`       | Tarifa 1        |
+| 4    | `2020-06-15T10:00:00`       | Tarifa 3        |
+| 5    | `2020-06-16T21:00:00`       | Tarifa 4        |
 
 Para ejecutarlos:
-
 ```bash
 mvn clean test
 ```
 
 ---
 
+## 🧽 Calidad del código
+
+- Analizado con **SonarQube**:
+  - Seguridad: ✅
+  - Fiabilidad: ✅
+  - Mantenibilidad: 🟢
+  - Cobertura de tests: Medida con **JaCoCo**
+
+---
+## Prueba Sonar
+![Arquitectura del proyecto](./docs/sonar.png)
+
+---
 ## 📝 Notas finales
 
-✔️ Código limpio, mantenible y extensible siguiendo **Hexagonal Architecture** y **Principios SOLID**.  
-✔️ Preparado para entornos de integración y despliegue continuo mediante contenedor Docker.  
-✔️ Fácil de extender para nuevas reglas de negocio o persistencia.
+✔️ Arquitectura limpia, mantenible y extensible.  
+✔️ Lista para CI/CD mediante contenedores.  
+✔️ Cumple principios de Clean Code y buenas prácticas Java.
+
